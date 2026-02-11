@@ -1,9 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
+using CICDDemo.Api.Services;
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<ICalculadoraService, CalculadoraService>();
 
 var app = builder.Build();
 
