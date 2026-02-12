@@ -9,6 +9,7 @@ builder.Services.AddSwaggerGen();
 
 // Register our services
 builder.Services.AddScoped<ICalculadoraService, CalculadoraService>();
+builder.Services.AddScoped<ITareaService, TareaService>();
 
 var app = builder.Build();
 
