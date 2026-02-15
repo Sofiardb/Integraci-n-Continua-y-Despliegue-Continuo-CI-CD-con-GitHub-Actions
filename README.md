@@ -6,13 +6,11 @@ En el contexto actual del desarrollo de software, la necesidad de entregar produ
 
 La Integración Continua propone que los desarrolladores integren sus cambios al repositorio de código de forma frecuente, validando cada integración mediante procesos automáticos de compilación y pruebas. El Despliegue Continuo extiende este concepto automatizando la liberación de versiones del software, permitiendo que las aplicaciones estén siempre en un estado potencialmente desplegable.
 
-Este trabajo se enmarca en estas prácticas y tiene como objetivo principal construir un cuerpo de conocimiento práctico que permita al lector **reproducir paso a paso una experiencia real de CI/CD**, utilizando **GitHub Actions** como herramienta central. A lo largo del documento se describe tanto el proceso técnico como las buenas prácticas de ingeniería de software aplicadas durante el desarrollo colaborativo del proyecto.
+Este trabajo se enmarca en estas prácticas y tiene como objetivo principal construir un cuerpo de conocimiento práctico que permita al lector **reproducir paso a paso una experiencia real de CI/CD**, utilizando **GitHub Actions** como herramienta central. A lo largo del documento se describe tanto el proceso técnico como las buenas prácticas de ingeniería de software aplicadas durante el desarrollo del proyecto.
 
 ---
 
 ## Desarrollo práctico
-
-### Replicación paso a paso del desarrollo y los commits
 
 Con el fin de cumplir el objetivo principal del trabajo (permitir que el lector reproduzca una experiencia práctica completa) se describe a continuación un **paso a paso detallado para replicar el proceso de desarrollo** utilizando el código provisto en este proyecto.
 
@@ -44,7 +42,7 @@ Moq - Framework de mocking
 GitHub Actions - CI/CD Pipeline
 Coverlet - Cobertura de código
 
-Este procedimiento permite reconstruir en un nuevo repositorio Git el flujo de trabajo colaborativo, observando cómo los commits reflejan el avance incremental del sistema y cómo el pipeline de CI/CD se ejecuta automáticamente en cada etapa.
+Este procedimiento permite reconstruir en un nuevo repositorio Git el flujo de trabajo, observando cómo los commits reflejan el avance incremental del sistema y cómo el pipeline de CI/CD se ejecuta automáticamente en cada etapa.
 
 
 ---
@@ -113,15 +111,15 @@ El proyecto se desarrolla íntegramente en un repositorio Git, el cual permite r
    # Referenciar la API desde el proyecto de tests
    dotnet add tests/CICDDemo.Api.Tests/CICDDemo.Api.Tests.csproj reference src/CICDDemo.Api/CICDDemo.Api.csproj
    ```
+2. Copiar el archivo .gitignore en la raíz del proyecto.
 
-2. Ejecutar el primer commit.
+3. Ejecutar el primer commit.
 ```bash
 git add .
 git commit -m "Commit inicial: Estructura del proyecto"
 git push origin main
 ```
-
-3. Verificar que el repositorio contiene la estructura base y que `dotnet build` y `dotnet test` se ejecutan correctamente.
+4. Verificar que el repositorio contiene la estructura base y que `dotnet build` y `dotnet test` se ejecutan correctamente.
 
 **Buenas prácticas:**
 - Evitar commits con múltiples responsabilidades.
@@ -175,26 +173,51 @@ El workflow define etapas de **build** y **test**, permitiendo detectar fallos d
 │  └──────────┘  └──────────┘  └─────────┘  └────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
 
+
+**Acción práctica 2:**
+1. Crear la carpeta `.github/workflows`.
+2. Copiar el archivo de workflow de GitHub Actions incluido en el proyecto.
+3. Ejecutar:
+   ```bash
+   git add .
+   git commit -m "ci: Agrego el pipeline CI/CD usando Github Actions"
+   git push origin main
+   ```
+4. Verificar en la pestaña *Actions* de GitHub que el pipeline se ejecuta automáticamente.
+
+
+**Buenas prácticas:**
+- Incorporar el pipeline desde las primeras etapas del proyecto.
+- Asegurar que el pipeline se ejecute tanto en pushes como en pull requests.
+- Mantener el pipeline simple y alineado con el alcance del proyecto.
+
+
+
 #### Protección de Ramas (Branch Protection Rules)
 
 Como parte del aseguramiento de la calidad y en coherencia con las prácticas de Integración Continua, se configuran reglas de protección sobre la rama main. Estas reglas garantizan que ningún cambio pueda integrarse directamente sin pasar previamente por el proceso de revisión y validación automática del pipeline.
 
-En GitHub, esta configuración se realiza desde: **Settings → Branches → Add branch protection rule**
+En GitHub, esta configuración se realiza desde: **Add branch ruleset (o Add branch protection rule, según la versión de la interfaz)**
 
-**Acción práctica 2:**
+**Acción práctica 3:**
 
 1. En **ruleset name** puede colocar: 'Protección para la rama main'
 2. En **target branches**, haga click en **Add target → Include by pattern → escriba main → Add inclusion pattern**
 3. Para la rama main, se recomienda habilitar las siguientes opciones:
 
-      ✅ Require a pull request before merging
+      ✅ Require a pull request before merging. Una vez tildado se desplegarán settings adiciones es recomendable que en required approvals se coloque un valor de 1 o más. Sin embargo, para replicar esta experiencia se omitirá esta sugerencia por si se esta llevando a cabo individualmente.
 
-      ✅ Require status checks to pass before merging (seleccionar los jobs del workflow, por ejemplo: Build and Test y Code Analysis)
+      ✅ Require status checks to pass. Se desplegarán opciones y habilite:
 
-      ✅ Require branches to be up to date before merging
+         ✅ Require branches to be up to date before merging
 
-      ✅ Require review from at least 1 reviewer
+         ✅ Haga click en Add Checks y escriba Build and Test de GitHub Actions y seleccione la opción. Repita lo mismo con **Code Analysis**
+
+**Nota: Mantenga las opciones tildadas por defecto**
+
 4. Click en **Create**
+
+**Nota: Se puede solicitar verificación vía email. Siga los pasos indicados en GitHub.**
 
 De esta manera, cualquier intento de integración debe:
 
@@ -205,25 +228,6 @@ De esta manera, cualquier intento de integración debe:
    - Finalizar correctamente todas las verificaciones antes de permitir el merge.
 
 Esta práctica fortalece la estabilidad del proyecto, evita la incorporación de código defectuoso en la rama principal y consolida la integración entre control de versiones y automatización CI/CD.
-
-
-**Acción práctica 3:**
-1. Crear la carpeta `.github/workflows`.
-2. Copiar el archivo de workflow de GitHub Actions incluido en el proyecto.
-3. Copiar el archivo .gitignore en la raíz del proyecto.
-4. Ejecutar:
-   ```bash
-   git add .github tests
-   git commit -m "ci: Agrego el pipeline CI/CD usando Github Actions"
-   git push origin main
-   ```
-5. Verificar en la pestaña *Actions* de GitHub que el pipeline se ejecuta automáticamente.
-
-
-**Buenas prácticas:**
-- Incorporar el pipeline desde las primeras etapas del proyecto.
-- Asegurar que el pipeline se ejecute tanto en pushes como en pull requests.
-- Mantener el pipeline simple y alineado con el alcance del proyecto.
 
 ---
 
@@ -242,7 +246,9 @@ El proyecto incluye pruebas unitarias desarrolladas con xUnit, las cuales se eje
 - Mantener las pruebas desacopladas de la implementación.
 - Usar los tests como mecanismo de confianza para futuras modificaciones.
 
-En la siguiente actividad práctica se explica cómo crear una rama de trabajo para desarrollar una funcionalidad. Se le proporcionan los archivos necesarios para implementarla. Sin embargo, es importante destacar que **el desarrollo de una aplicación real debe realizarse de forma incremental mediante varios commits** (por ejemplo: primero modelos, luego servicios, después controladores y, a continuación, los tests de esa funcionalidad), en lugar de agregar todo en un solo commit. De esta forma se siguen buenas prácticas: commits pequeños y con un propósito claro, lo que facilita la revisión y la trazabilidad. Así podrá observar el flujo completo: cambios en la rama → apertura del pull request → ejecución del pipeline → integración a `main` una vez que el pipeline finalice correctamente.
+En la siguiente actividad práctica se explica cómo crear una rama de trabajo para desarrollar una funcionalidad. Se le proporcionan los archivos necesarios para implementarla. Sin embargo, es importante destacar que **el desarrollo de una aplicación real debe realizarse de forma incremental mediante varios commits** (por ejemplo: primero modelos, luego servicios, después controladores y, a continuación, los tests de esa funcionalidad), en lugar de agregar todo en un solo commit. De esta forma se siguen buenas prácticas: commits pequeños y con un propósito claro, lo que facilita la revisión y la trazabilidad. 
+
+Podrá observar el flujo completo: cambios en la rama → apertura del pull request → ejecución del pipeline → integración a `main` una vez que el pipeline finalice correctamente.
 
 **Acción práctica 4:**
 
@@ -263,59 +269,59 @@ En la siguiente actividad práctica se explica cómo crear una rama de trabajo p
       src/CICDDemo.Api/Controllers/CalculadoraController.cs
    **Agregar: en src/CICDDemo.Api/Program.cs**
       ```csharp
-      using CICDDemo.Api.Services;
-      // ... después de builder.Services.AddSwaggerGen();
-      builder.Services.AddScoped<ICalculadoraService, CalculadoraService>(); 
+         // Reemplazar el código del archivo src/CICDDemo.Api/Program.cs por el siguiente:
+         using CICDDemo.Api.Services;
+
+         var builder = WebApplication.CreateBuilder(args);
+
+         // Add services to the container.
+         builder.Services.AddControllers();
+         builder.Services.AddEndpointsApiExplorer();
+         builder.Services.AddSwaggerGen();
+
+         // Register our services
+         builder.Services.AddScoped<ICalculadoraService, CalculadoraService>();
+
+         var app = builder.Build();
+
+         // Configure the HTTP request pipeline.
+         if (app.Environment.IsDevelopment())
+         {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+         }
+
+         app.UseHttpsRedirection();
+         app.UseAuthorization();
+         app.MapControllers();
+
+         app.Run();
+
+         // Make the implicit Program class public so test projects can access it
+         public partial class Program { }
       ```
    **Archivos a copiar para implementar los tests:**
       tests/CICDDemo.Api.Tests/Services/CalculadoraServiceTests.cs
       tests/CICDDemo.Api.Tests/Controllers/CalculadoraControllerTests.cs
 3. Ejecutar:
+      ```bash
+      dotnet add tests/CICDDemo.Api.Tests package Moq
+      dotnet restore
+      dotnet build
+      ```
+4. Ejecutar:
    ```bash
    git add .
    git commit -m "feat: Agrego la funcionalidad Calculadora"
-   git push origin main
+   git push --set-upstream origin feature/calculadora
    ```
-4. Abrir un pull request y observar la ejecución del pipeline (build + tests). Pasos en GitHub:
-   - **4.1** Tras hacer `git push origin´ abre el repositorio en GitHub en tu navegador.
+5. Abrir un pull request y observar la ejecución del pipeline (build + tests). Pasos en GitHub:
+   - **4.1** Tras hacer `git push´ abre el repositorio en GitHub en tu navegador.
    - **4.2** Suele aparecer un banner amarillo: *"feature/calculadora had recent pushes"* con el botón **"Compare & pull request"**. Haz clic ahí. Si no aparece, ve a la pestaña **Pull requests** y clic en **"New pull request"**.
    - **4.3** En la página del PR, comprueba que la **base** sea `main` y la **compare** sea tu rama (p. ej. `feature/calculadora`). Escribe un título (p. ej. "feat: API Calculadora y tests") y, si quieres, una descripción. Haz clic en **"Create pull request"**.
    - **4.4** En la misma página del PR verás que GitHub ejecuta los *checks* (workflows). Aparecen en la sección de comprobaciones bajo el título o en la pestaña **"Checks"**. Espera a que termine el run.
    - **4.5** Para ver el pipeline con detalle: ve a la pestaña **Actions** del repositorio. El run más reciente será el disparado por tu PR. Ábrelo y revisa los jobs **Build and Test** y **Code Analysis**; en un PR no se ejecuta el job "Publish Artifacts" (solo en push a `main`).
    - **4.6** Si todos los checks pasan (marca verde), el PR está listo para revisión y merge. Si algo falla, revisa los logs del job que falló en *Actions* y corrige antes de mergear.
-
-**PASO 2: Crear feature de Tareas**
-
-1. Crear una rama de feature desde `main` `feature/tareas`.
-      ´´´ bash
-      # Crear y cambiar a nueva rama
-      git checkout -b feature/tareas
-
-      # Verificar que estás en la nueva rama
-      git branch
-      ```
-2. Incorpore los siguientes archivos que implementan la nueva funcionalidad:
-   **Archivos a copiar para implementar el feature:**
-      src/CICDDemo.Api/Services/ITareaService.cs
-      src/CICDDemo.Api/Services/TareaService.cs
-      src/CICDDemo.Api/Models/Tarea.cs
-      src/CICDDemo.Api/Controllers/TareasController.cs
-   **Agregar: en src/CICDDemo.Api/Program.cs**
-      ```csharp
-      using CICDDemo.Api.Services;
-      // ... después de builder.Services.AddSwaggerGen();
-      builder.Services.AddScoped<ITareaService, TareaService>(); 
-      ```
-   **Archivos a copiar para implementar los tests:**
-      tests/CICDDemo.Api.Tests/Services/TareaServiceTests.cs
-      tests/CICDDemo.Api.Tests/Controllers/TareasControllerTests.cs
-3. Ejecutar:
-   ```bash
-   git add .
-   git commit -m "feat: Agrego la funcionalidad para Tareas"
-   git push origin main
-
-4. Replicar el paso 4 de **Crear feature Calculadora** pero con la rama `feature/tareas` desde Github.
 
 **Buenas prácticas:**
 - Usar una rama por funcionalidad.
@@ -323,14 +329,14 @@ En la siguiente actividad práctica se explica cómo crear una rama de trabajo p
 - Revisar los resultados del pipeline antes de realizar el merge.
 
 
-### Generación de artefactos
+#### Generación de artefactos
 
 Como parte del proceso de Despliegue Continuo, el pipeline ya incluye un job que publica artefactos. Ese job **solo se ejecuta cuando hay un push a la rama `main`** (no en los runs provocados por un pull request). Tras cada merge a `main`, el push resultante dispara el workflow y se generan los artefactos de la aplicación. Estos representan una versión construida y validada del sistema, lista para su uso o despliegue.
 
 **Acción práctica 5:**
 
-1. **Mergear el primer Pull Request** (por ejemplo el de `feature/calculadora` o el de `feature/tareas` que hayas abierto en el paso anterior).
-   - En GitHub, entra al PR y haz clic en **"Merge pull request"** (y confirma el merge).
+1. **Mergear el Pull Request** (el de `feature/calculadora`).
+   - En GitHub, dirigite a la pestaña **Pull Request** entra al PR de feature/calculadora y haz clic en **"Merge pull request"** (y confirma el merge).
    - Eso hace un **push a `main`** con los cambios integrados.
 
 2. **Ir a la pestaña *Actions*** del repositorio. Verás un nuevo run del workflow disparado por ese push a `main`.
@@ -340,11 +346,10 @@ Como parte del proceso de Despliegue Continuo, el pipeline ya incluye un job que
    - *Code Analysis*
    - **Publish Artifacts** ← este job solo aparece en runs por push a `main`, no en runs por PR.
 
-4. **Esperar a que el run termine en verde.** Si "Publish Artifacts" finalizó correctamente, en la parte inferior del run aparece la sección **Artifacts**.
+4. **Esperar a que el run termine en verde.** Si "Publish Artifacts" finalizó correctamente, en la parte inferior del run aparece la sección **Artifacts**. Si no lo observa, refresque la página.
 
 5. **Descargar el artefacto:** haz clic en **`app-artifacts`** para descargar el ZIP con la publicación de la API.
 
-6. **Repetir con el siguiente PR** (por ejemplo mergear `feature/tareas` si antes mergeaste `feature/calculadora`). Vuelve a *Actions*, abre el run del nuevo push a `main` y comprueba que se generó de nuevo el artefacto `app-artifacts` para esa versión del código.
 
 Así se observa en la práctica que cada integración a `main` genera una nueva versión publicada y disponible en Artifacts.
 
@@ -354,9 +359,58 @@ Así se observa en la práctica que cada integración a `main` genera una nueva 
 
 ---
 
+Si desea continuar viendo cómo funciona el flujo de trabajo, puede implementar una segunda funcionalidad propuesta en el proyecto: **feature/Tareas**
+
+**Crear feature de Tareas**
+
+1. Crear una rama de feature desde `main` `feature/tareas`.
+      ´´´ bash
+
+      # Cambiar a rama main
+      git checkout main
+
+      # Hacer un pull para actualizar la rama main
+
+      git pull origin main
+      
+      # Crear y cambiar a nueva rama
+      git checkout -b feature/tareas
+
+      # Verificar que estás en la nueva rama
+      git branch
+
+      ```
+2. Incorpore los siguientes archivos que implementan la nueva funcionalidad:
+   **Archivos a copiar para implementar el feature:**
+      src/CICDDemo.Api/Services/ITareaService.cs
+      src/CICDDemo.Api/Services/TareaService.cs
+      src/CICDDemo.Api/Models/Tarea.cs
+      src/CICDDemo.Api/Controllers/TareasController.cs
+   **Modificar: en src/CICDDemo.Api/Program.cs**
+      ```csharp 
+      using CICDDemo.Api.Services;
+      // ... después de builder.Services.AddSwaggerGen();
+      builder.Services.AddScoped<ITareaService, TareaService>(); 
+
+      ```
+   **Archivos a copiar para implementar los tests:**
+      tests/CICDDemo.Api.Tests/Services/TareaServiceTests.cs
+      tests/CICDDemo.Api.Tests/Controllers/TareasControllerTests.cs
+3. Ejecutar:
+   ```bash
+   git add .
+   git commit -m "feat: Agrego la funcionalidad para Tareas"
+   git push --set-upstream origin feature/tareas
+
+4. Replicar el paso 4 de **Crear feature Calculadora** pero con la rama `feature/tareas` desde Github.
+
+5. Para el merge de esta rama y publicación de artefactos, replicar la **Acción práctica 5** de la sección **Generación de Artefactos**.
+
+---
+
 ## Beneficios de implementar CI/CD
 
-La implementación de prácticas de Integración Continua y Despliegue Continuo (CI/CD) genera beneficios significativos tanto en el ámbito técnico de la Ingeniería de Software como en otras dimensiones organizacionales.
+La implementación de prácticas de Integración Continua y Despliegue Continuo (CI/CD) genera beneficios significativos en el ámbito técnico de la Ingeniería de Software:
 
 ### Impacto en la Ingeniería de Software
 
@@ -372,7 +426,7 @@ La implementación de prácticas de Integración Continua y Despliegue Continuo 
 
 ### Impacto en otras áreas
 
-La implementación de CI/CD no solo produce mejoras en el proceso técnico de desarrollo, sino que también genera efectos positivos en otras áreas de la organización. En primer lugar, aumenta la previsibilidad en las entregas, ya que la automatización de compilaciones, pruebas y generación de artefactos reduce la incertidumbre asociada a tareas manuales y repetitivas. Al contar con procesos estandarizados y verificaciones automáticas, las estimaciones de tiempos y la planificación de versiones se vuelven más confiables.
+La implementación de CI/CD no solo produce mejoras en el proceso técnico de desarrollo, sino que también genera efectos positivos en otras áreas a nivel organizacional. En primer lugar, aumenta la previsibilidad en las entregas, ya que la automatización de compilaciones, pruebas y generación de artefactos reduce la incertidumbre asociada a tareas manuales y repetitivas. Al contar con procesos estandarizados y verificaciones automáticas, las estimaciones de tiempos y la planificación de versiones se vuelven más confiables.
 
 Asimismo, CI/CD favorece la colaboración interdisciplinaria. Al compartir un mismo flujo automatizado, los equipos de desarrollo, testing y operaciones trabajan sobre una base común de validación y despliegue, lo que reduce fricciones y mejora la coordinación. Este enfoque se alinea con los principios de DevOps, promoviendo una integración más fluida entre áreas tradicionalmente separadas.
 
@@ -380,7 +434,7 @@ Finalmente, la generación automática de versiones construidas y verificadas in
 
 ---
 
-## Desafíos y consideraciones profesionales
+## Desafíos y consideraciones
 
 Si bien CI/CD aporta múltiples beneficios, su adopción requiere una implementación cuidadosa y un análisis contextual por parte de los profesionales responsables del proyecto.
 
@@ -390,7 +444,7 @@ Un pipeline mal configurado puede volverse lento, complejo o ineficiente. Es fun
 
 ### Mantenimiento del conjunto de pruebas
 
-El valor de CI/CD depende directamente de la calidad y cobertura de las pruebas automatizadas. Los profesionales deben mantener los tests actualizados, evitar pruebas frágiles o excesivamente dependientes de detalles internos de implementación y controlar el crecimiento del tiempo de ejecución del pipeline. Un conjunto de pruebas inestable puede generar desconfianza y reducir la efectividad del proceso.
+El valor de CI/CD depende directamente de la calidad y cobertura de las pruebas automatizadas. Se deben mantener los tests actualizados, evitar pruebas frágiles o excesivamente dependientes de detalles internos de implementación y controlar el crecimiento del tiempo de ejecución del pipeline. Un conjunto de pruebas inestable puede generar desconfianza y reducir la efectividad del proceso.
 
 ### Gestión cultural y disciplina del equipo
 
@@ -402,7 +456,7 @@ Es necesario configurar adecuadamente reglas de protección de ramas, controles 
 
 ### Escalabilidad del proceso
 
-A medida que el proyecto crece, el pipeline debe evolucionar. Los profesionales deben evaluar la incorporación de análisis de calidad más avanzados, estrategias de versionado y aut
+A medida que el proyecto crece, el pipeline debe evolucionar. Se deben evaluar la incorporación de análisis de calidad más avanzados, estrategias de versionado y automatización de despliegues en entornos reales. CI/CD debe concebirse como un proceso adaptable y escalable, alineado con la madurez y necesidades del proyecto.
 
 
 ---
