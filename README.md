@@ -13,7 +13,7 @@ Este trabajo se enmarca en estas prácticas y tiene como objetivo principal cons
 ## Desarrollo práctico
 
 Con el fin de cumplir el objetivo principal del trabajo (permitir que el lector reproduzca una experiencia práctica completa) se describe a continuación un **paso a paso detallado para replicar el proceso de desarrollo** utilizando el código provisto en este proyecto.
-
+```
 #### Contenido del proyecto
 Integracion-Continua-y-Despliegue-Continuo-CI-CD-con-GitHub-Actions/
 ├── .github/
@@ -32,7 +32,7 @@ Integracion-Continua-y-Despliegue-Continuo-CI-CD-con-GitHub-Actions/
 │__ .gitignore
 ├── CICDDemo.sln               # Solución de Visual Studio
 └── README.md                  # Este archivo
-
+```
 #### Tecnologías utilizadas
 
 .NET 8 - Framework de desarrollo
@@ -137,7 +137,7 @@ Una vez creado el proyecto base, se incorpora un pipeline de Integración Contin
 El workflow define etapas de **build** y **test**, permitiendo detectar fallos de manera temprana y reduciendo el riesgo de integrar código defectuoso a la rama principal.
 
 #### Flujo del pipeline
-
+```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        TRIGGER                                  │
 │         Push a main/master  |  Pull Request a main/master       │
@@ -176,6 +176,7 @@ El workflow define etapas de **build** y **test**, permitiendo detectar fallos d
 │  └──────────┘  └──────────┘  └─────────┘  └────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
 
+```
 
 **Acción práctica 2:**
 1. Crear la carpeta `.github/workflows`.
@@ -258,13 +259,14 @@ Podrá observar el flujo completo: cambios en la rama → apertura del pull requ
 **PASO 1: Crear feature Calculadora**
 1. Crear una rama de feature desde `main` `feature/calculadora`.
 2.    ```bash
-      Crear y cambiar a nueva rama
+
+      # Crear y cambiar a nueva rama
       git checkout -b feature/calculadora
 
       # Verificar que estás en la nueva rama
       git branch
       ```
-3. Incorpore los siguientes archivos que implementan la nueva funcionalidad:
+4. Incorpore los siguientes archivos que implementan la nueva funcionalidad:
    **Archivos a copiar para implementar el feature:**
       src/CICDDemo.Api/Services/ICalculadoraService.cs
       src/CICDDemo.Api/Services/CalculadoraService.cs
@@ -306,19 +308,19 @@ Podrá observar el flujo completo: cambios en la rama → apertura del pull requ
    **Archivos a copiar para implementar los tests:**
       tests/CICDDemo.Api.Tests/Services/CalculadoraServiceTests.cs
       tests/CICDDemo.Api.Tests/Controllers/CalculadoraControllerTests.cs
-4. Ejecutar:
+5. Ejecutar:
       ```bash
       dotnet add tests/CICDDemo.Api.Tests package Moq
       dotnet restore
       dotnet build
       ```
-5. Ejecutar:
+6. Ejecutar:
    ```bash
    git add .
    git commit -m "feat: Agrego la funcionalidad Calculadora"
    git push --set-upstream origin feature/calculadora
    ```
-6. Abrir un pull request y observar la ejecución del pipeline (build + tests). Pasos en GitHub:
+7. Abrir un pull request y observar la ejecución del pipeline (build + tests). Pasos en GitHub:
    - **4.1** Tras hacer `git push´ abre el repositorio en GitHub en tu navegador.
    - **4.2** Suele aparecer un banner amarillo: *"feature/calculadora had recent pushes"* con el botón **"Compare & pull request"**. Haz clic ahí. Si no aparece, ve a la pestaña **Pull requests** y clic en **"New pull request"**.
    - **4.3** En la página del PR, comprueba que la **base** sea `main` y la **compare** sea tu rama (p. ej. `feature/calculadora`). Escribe un título (p. ej. "feat: API Calculadora y tests") y, si quieres, una descripción. Haz clic en **"Create pull request"**.
