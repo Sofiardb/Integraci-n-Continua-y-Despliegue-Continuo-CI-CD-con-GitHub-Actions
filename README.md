@@ -49,7 +49,9 @@ Este procedimiento permite reconstruir en un nuevo repositorio Git el flujo de t
 
 
 ### Prerrequisitos
+
 [.NET 8 SDK](https://dotnet.microsoft.com/es-es/download/dotnet/8.0)
+
 [Git](https://git-scm.com/install/)
 
 
@@ -60,18 +62,19 @@ Este procedimiento permite reconstruir en un nuevo repositorio Git el flujo de t
 El proyecto se desarrolla íntegramente en un repositorio Git, el cual permite registrar el historial completo de cambios y evidenciar la colaboración entre los distintos miembros del equipo. Cada funcionalidad se implementa de forma incremental mediante commits pequeños y descriptivos, lo que facilita la trazabilidad y el entendimiento del avance del trabajo.
 
 **Acción práctica 1:**
+
 **Paso 1: Crear un nuevo repositorio**
 1. Crear un repositorio vacío en GitHub (sin README ni configuraciones iniciales).
       
-      ### 1.1 Ir a GitHub
+      **1.1 Ir a GitHub**
       1. Abre tu navegador y ve a [github.com](https://github.com)
       2. Inicia sesión con tu cuenta
 
-      ### 1.2 Crear nuevo repositorio
+      **1.2 Crear nuevo repositorio**
       1. Haz clic en el botón **"+"** en la esquina superior derecha
       2. Selecciona **"New repository"**  
       
-      ### 1.3 Configurar el repositorio
+      **1.3 Configurar el repositorio**
       Completa el formulario:
 
       | Campo | Valor |
@@ -81,7 +84,7 @@ El proyecto se desarrolla íntegramente en un repositorio Git, el cual permite r
       | **Visibility** | Public (o Private si prefieres) |
       | **Initialize this repository** | ❌ NO marcar nada |
 
-      ### 1.4 Crear repositorio
+      **1.4 Crear repositorio**
       Haz clic en **"Create repository"**   
 
 2. Clonar el repositorio localmente:
@@ -89,7 +92,7 @@ El proyecto se desarrolla íntegramente en un repositorio Git, el cual permite r
    ```bash
    git clone <url-del-repositorio>
    cd <nombre-del-repositorio>
-
+   ```
 **Paso 2: Commit inicial – estructura del proyecto**
 
 1.Desde la raíz del repositorio clonado, ejecutar:
@@ -254,14 +257,14 @@ Podrá observar el flujo completo: cambios en la rama → apertura del pull requ
 
 **PASO 1: Crear feature Calculadora**
 1. Crear una rama de feature desde `main` `feature/calculadora`.
-      ´´´ bash
-      # Crear y cambiar a nueva rama
+2.    ```bash
+      Crear y cambiar a nueva rama
       git checkout -b feature/calculadora
 
       # Verificar que estás en la nueva rama
       git branch
       ```
-2. Incorpore los siguientes archivos que implementan la nueva funcionalidad:
+3. Incorpore los siguientes archivos que implementan la nueva funcionalidad:
    **Archivos a copiar para implementar el feature:**
       src/CICDDemo.Api/Services/ICalculadoraService.cs
       src/CICDDemo.Api/Services/CalculadoraService.cs
@@ -303,19 +306,19 @@ Podrá observar el flujo completo: cambios en la rama → apertura del pull requ
    **Archivos a copiar para implementar los tests:**
       tests/CICDDemo.Api.Tests/Services/CalculadoraServiceTests.cs
       tests/CICDDemo.Api.Tests/Controllers/CalculadoraControllerTests.cs
-3. Ejecutar:
+4. Ejecutar:
       ```bash
       dotnet add tests/CICDDemo.Api.Tests package Moq
       dotnet restore
       dotnet build
       ```
-4. Ejecutar:
+5. Ejecutar:
    ```bash
    git add .
    git commit -m "feat: Agrego la funcionalidad Calculadora"
    git push --set-upstream origin feature/calculadora
    ```
-5. Abrir un pull request y observar la ejecución del pipeline (build + tests). Pasos en GitHub:
+6. Abrir un pull request y observar la ejecución del pipeline (build + tests). Pasos en GitHub:
    - **4.1** Tras hacer `git push´ abre el repositorio en GitHub en tu navegador.
    - **4.2** Suele aparecer un banner amarillo: *"feature/calculadora had recent pushes"* con el botón **"Compare & pull request"**. Haz clic ahí. Si no aparece, ve a la pestaña **Pull requests** y clic en **"New pull request"**.
    - **4.3** En la página del PR, comprueba que la **base** sea `main` y la **compare** sea tu rama (p. ej. `feature/calculadora`). Escribe un título (p. ej. "feat: API Calculadora y tests") y, si quieres, una descripción. Haz clic en **"Create pull request"**.
@@ -364,7 +367,7 @@ Si desea continuar viendo cómo funciona el flujo de trabajo, puede implementar 
 **Crear feature de Tareas**
 
 1. Crear una rama de feature desde `main` `feature/tareas`.
-      ´´´ bash
+      ```bash
 
       # Cambiar a rama main
       git checkout main
@@ -378,7 +381,6 @@ Si desea continuar viendo cómo funciona el flujo de trabajo, puede implementar 
 
       # Verificar que estás en la nueva rama
       git branch
-
       ```
 2. Incorpore los siguientes archivos que implementan la nueva funcionalidad:
    **Archivos a copiar para implementar el feature:**
@@ -401,7 +403,7 @@ Si desea continuar viendo cómo funciona el flujo de trabajo, puede implementar 
    git add .
    git commit -m "feat: Agrego la funcionalidad para Tareas"
    git push --set-upstream origin feature/tareas
-
+   ```
 4. Replicar el paso 4 de **Crear feature Calculadora** pero con la rama `feature/tareas` desde Github.
 
 5. Para el merge de esta rama y publicación de artefactos, replicar la **Acción práctica 5** de la sección **Generación de Artefactos**.
